@@ -1,0 +1,40 @@
+syntax = "v1"
+
+service core-api {
+	// user login
+	@handler UserLoginHandler
+	post /user/login (LoginRequest) returns (LoginResponse)
+
+	// user info
+	@handler UserInfoHandler
+	get /user/info (InfoRequest) returns (InfoResponse)
+
+	// send email code
+	@handler EmailCodeHandler
+	post /email/sendcode (EmailCodeRequest) returns (EmailCodeResponse)
+}
+
+type LoginRequest {
+	UserName string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResponse {
+	Token string `json:"token"`
+}
+
+type InfoRequest {
+	Identity string `json:"identity"`
+}
+
+type InfoResponse {
+	UserName string `json:"username"`
+	Email    string `json:email`
+}
+
+type EmailCodeRequest {
+	Email string `json:"email"`
+}
+
+type EmailCodeResponse {}
+
