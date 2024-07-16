@@ -18,6 +18,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: EmailCodeHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodPost,
+				Path:    "/file/upload",
+				Handler: FileUploadHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodGet,
 				Path:    "/user/info",
 				Handler: UserInfoHandler(serverCtx),

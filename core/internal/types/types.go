@@ -8,6 +8,18 @@ type EmailCodeRequest struct {
 type EmailCodeResponse struct {
 }
 
+type FileUploadRequest struct {
+	Hash string `json:"hash,optional"`
+	Name string `json:"name,optional"`
+	Ext  string `json:"ext,optional"`
+	Size int64  `json:"size,optional"`
+	Path string `json:"path,optional"`
+}
+
+type FileUploadResponse struct {
+	Identity string `json:"identity"`
+}
+
 type InfoRequest struct {
 	Identity string `json:"identity"`
 }

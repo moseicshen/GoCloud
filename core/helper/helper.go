@@ -3,14 +3,19 @@ package helper
 import (
 	"GoCloud/core/define"
 	"GoCloud/core/key"
+	"context"
 	"crypto/md5"
 	"crypto/tls"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	uuid2 "github.com/google/uuid"
 	"github.com/jordan-wright/email"
+	"github.com/tencentyun/cos-go-sdk-v5"
 	"math/rand"
+	"net/http"
 	"net/smtp"
+	"net/url"
+	"path"
 	"time"
 )
 
@@ -65,4 +70,25 @@ func UUID() string {
 		return ""
 	}
 	return uuid.String()
+}
+
+// UploadFile upload to Tencent Cloud COS
+func UploadFile(r *http.Request) (string, error) {
+	u, _ := url.Parse(key.COSURL)
+	b := &cos.BaseURL{BucketURL: u}
+	c := cos.NewClient(b, &http.Client{
+		Transport: &cos.AuthorizationTransport{
+			SecretID:  key.SecretID,
+			SecretKey: key.SecretKey,
+		},
+	})
+	file, fileHeader, err := r.FormFile("file")
+	uuid := UUID()
+	name := "GoCloud/" + uuid + path.Ext(fileHeader.Filename)
+	_, err = c.Object.Put(context.Background(), name, file, nil)
+	if err != nil {
+		panic(err)
+	}
+	keyStr := key.COSURL + "/" + name
+	return keyStr, nil
 }

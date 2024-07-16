@@ -29,7 +29,7 @@ func NewEmailCodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *EmailCo
 
 func (l *EmailCodeLogic) EmailCode(req *types.EmailCodeRequest) (resp *types.EmailCodeResponse, err error) {
 	// the email was not registered before
-	cnt, err := models.Engine.Where("email = ?", req.Email).Count(new(models.UserBasic))
+	cnt, err := l.svcCtx.Engine.Where("email = ?", req.Email).Count(new(models.UserBasic))
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (l *EmailCodeLogic) EmailCode(req *types.EmailCodeRequest) (resp *types.Ema
 	// generate a random code
 	code := helper.RandCode()
 	// store code in redis
-	models.RedisDB.Set(l.ctx, req.Email, code, time.Second*time.Duration(define.EmailCodeExpireTime))
+	l.svcCtx.RedisDB.Set(l.ctx, req.Email, code, time.Second*time.Duration(define.EmailCodeExpireTime))
 	// send code to email
 	err = helper.SendEmailCode(req.Email, code)
 	if err != nil {

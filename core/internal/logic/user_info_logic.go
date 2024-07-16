@@ -28,7 +28,7 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 func (l *UserInfoLogic) UserInfo(req *types.InfoRequest) (resp *types.InfoResponse, err error) {
 	resp = new(types.InfoResponse)
 	ub := new(models.UserBasic)
-	get, err := models.Engine.Where("identity=?", req.Identity).Get(ub)
+	get, err := l.svcCtx.Engine.Where("identity=?", req.Identity).Get(ub)
 	if err != nil {
 		return nil, err
 	}

@@ -30,7 +30,7 @@ func NewUserRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 
 func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterRequest) (resp *types.UserRegisterResponse, err error) {
 	// compare the input code with the one stored in redis
-	code, err := models.RedisDB.Get(l.ctx, req.Email).Result()
+	code, err := l.svcCtx.RedisDB.Get(l.ctx, req.Email).Result()
 	if err != nil {
 		return nil, errors.New("request for email code first")
 	}
@@ -40,7 +40,7 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterRequest) (resp *
 	}
 
 	// the username was not registered before
-	cnt, err := models.Engine.Where("name = ?", req.UserName).Count(&models.UserBasic{})
+	cnt, err := l.svcCtx.Engine.Where("name = ?", req.UserName).Count(&models.UserBasic{})
 	if err != nil {
 		return nil, err
 	}
@@ -60,11 +60,11 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterRequest) (resp *
 		Password: helper.Md5(req.Password),
 		Email:    req.Email,
 	}
-	n, err := models.Engine.Insert(user)
+	n, err := l.svcCtx.Engine.Insert(user)
 	if err != nil {
 		return nil, err
 	}
-	models.RedisDB.Del(l.ctx, req.Email)
+	l.svcCtx.RedisDB.Del(l.ctx, req.Email)
 	log.Printf("insert user row: %s", strconv.FormatInt(n, 10))
 	return
 }
