@@ -1,11 +1,14 @@
 package logic
 
 import (
+	"GoCloud/core/define"
 	"GoCloud/core/helper"
-	"context"
-
 	"GoCloud/core/internal/svc"
 	"GoCloud/core/internal/types"
+	"GoCloud/core/models"
+	"context"
+	"errors"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -25,7 +28,21 @@ func NewEmailCodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *EmailCo
 }
 
 func (l *EmailCodeLogic) EmailCode(req *types.EmailCodeRequest) (resp *types.EmailCodeResponse, err error) {
-	err = helper.SendEmailCode(req.Email, "1234")
+	// the email was not registered before
+	cnt, err := models.Engine.Where("email = ?", req.Email).Count(new(models.UserBasic))
+	if err != nil {
+		return nil, err
+	}
+	if cnt > 0 {
+		err = errors.New("the Email has been registered")
+		return
+	}
+	// generate a random code
+	code := helper.RandCode()
+	// store code in redis
+	models.RedisDB.Set(l.ctx, req.Email, code, time.Second*time.Duration(define.EmailCodeExpireTime))
+	// send code to email
+	err = helper.SendEmailCode(req.Email, code)
 	if err != nil {
 		return nil, err
 	}

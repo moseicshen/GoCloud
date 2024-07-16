@@ -10,3 +10,6 @@ type UserClaim struct {
 }
 
 var JwtKey = "go-cloud-key"
+
+var EmailCodeLength = 6
+var EmailCodeExpireTime = 300

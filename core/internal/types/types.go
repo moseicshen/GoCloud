@@ -25,3 +25,13 @@ type LoginRequest struct {
 type LoginResponse struct {
 	Token string `json:"token"`
 }
+
+type UserRegisterRequest struct {
+	UserName string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Code     string `json:"code"`
+}
+
+type UserRegisterResponse struct {
+}

@@ -9,9 +9,13 @@ service core-api {
 	@handler UserInfoHandler
 	get /user/info (InfoRequest) returns (InfoResponse)
 
-	// send email code
+	// send email code when registeration
 	@handler EmailCodeHandler
 	post /email/sendcode (EmailCodeRequest) returns (EmailCodeResponse)
+
+	// user register
+	@handler UserRegisterHandler
+	post /user/register (UserRegisterRequest) returns (UserRegisterResponse)
 }
 
 type LoginRequest {
@@ -37,4 +41,13 @@ type EmailCodeRequest {
 }
 
 type EmailCodeResponse {}
+
+type UserRegisterRequest {
+	UserName string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Code     string `json:"code"`
+}
+
+type UserRegisterResponse {}
 

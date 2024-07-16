@@ -7,8 +7,11 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	uuid2 "github.com/google/uuid"
 	"github.com/jordan-wright/email"
+	"math/rand"
 	"net/smtp"
+	"time"
 )
 
 func Md5(s string) string {
@@ -44,4 +47,22 @@ func SendEmailCode(userEmail string, code string) (err error) {
 		return err
 	}
 	return
+}
+
+func RandCode() string {
+	s := "0123456789"
+	code := ""
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < define.EmailCodeLength; i++ {
+		code += string(s[r.Intn(len(s))])
+	}
+	return code
+}
+
+func UUID() string {
+	uuid, err := uuid2.NewUUID()
+	if err != nil {
+		return ""
+	}
+	return uuid.String()
 }
