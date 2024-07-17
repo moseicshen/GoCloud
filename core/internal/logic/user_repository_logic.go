@@ -2,13 +2,13 @@ package logic
 
 import (
 	"GoCloud/core/helper"
-	"GoCloud/core/models"
-	"context"
-
 	"GoCloud/core/internal/svc"
 	"GoCloud/core/internal/types"
-
+	"GoCloud/core/models"
+	"context"
+	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
+	"strings"
 )
 
 type UserRepositoryLogic struct {
@@ -26,6 +26,18 @@ func NewUserRepositoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Us
 }
 
 func (l *UserRepositoryLogic) UserRepository(req *types.UserRepositoryRequest, userIdentity string) (resp *types.UserRepositoryResponse, err error) {
+	for {
+		count, err := l.svcCtx.Engine.Table("user_repository").Where("parent_id = ? AND user_identity = ? AND name = ?", req.ParentId, userIdentity, req.Name).Count()
+		if err != nil {
+			return nil, err
+		}
+		if count > 0 {
+			prevName, _ := strings.CutSuffix(req.Name, req.Ext)
+			req.Name = fmt.Sprintf("%s_1%s", prevName, req.Ext)
+		} else {
+			break
+		}
+	}
 	ur := &models.UserRepository{
 		Identity:           helper.UUID(),
 		UserIdentity:       userIdentity,
