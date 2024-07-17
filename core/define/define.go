@@ -13,3 +13,5 @@ var JwtKey = "go-cloud-key"
 
 var EmailCodeLength = 6
 var EmailCodeExpireTime = 300
+
+var ListPageSizeDefault = 20

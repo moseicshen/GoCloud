@@ -8,6 +8,14 @@ type EmailCodeRequest struct {
 type EmailCodeResponse struct {
 }
 
+type FileRenameRequest struct {
+	Identity string `json:"identity"`
+	NewName  string `json:"newName"`
+}
+
+type FileRenameResponse struct {
+}
+
 type FileUploadRequest struct {
 	Hash string `json:"hash,optional"`
 	Name string `json:"name,optional"`
@@ -40,6 +48,16 @@ type LoginResponse struct {
 	Token string `json:"token"`
 }
 
+type UserFile struct {
+	Id                 int    `json:"id"`
+	Identity           string `json:"identity"`
+	RepositoryIdentity string `json:"repositoryIdentity"`
+	Name               string `json:"name"`
+	Ext                string `json:"ext"`
+	Path               string `json:"path"`
+	Size               int64  `json:"size"`
+}
+
 type UserRegisterRequest struct {
 	UserName string `json:"username"`
 	Email    string `json:"email"`
@@ -48,6 +66,17 @@ type UserRegisterRequest struct {
 }
 
 type UserRegisterResponse struct {
+}
+
+type UserRepositoryListRequest struct {
+	Id   int `json:"id,optional"`
+	Page int `json:"page,optional"`
+	Size int `json:"size,optional"`
+}
+
+type UserRepositoryListResponse struct {
+	List  []*UserFile `json:"list"`
+	Count int         `json:"count"`
 }
 
 type UserRepositoryRequest struct {

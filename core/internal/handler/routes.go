@@ -41,8 +41,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/file/rename",
+					Handler: FileRenameHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/file/upload",
 					Handler: FileUploadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/user/repository/list",
+					Handler: UserRepositoryListHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
