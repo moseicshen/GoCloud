@@ -18,6 +18,8 @@ type FileUploadRequest struct {
 
 type FileUploadResponse struct {
 	Identity string `json:"identity"`
+	Ext      string `json:"ext"`
+	Name     string `json:"name"`
 }
 
 type InfoRequest struct {
@@ -46,4 +48,15 @@ type UserRegisterRequest struct {
 }
 
 type UserRegisterResponse struct {
+}
+
+type UserRepositoryRequest struct {
+	ParentId           int    `json:"parentId"`
+	RepositoryIdentity string `json:"repositoryIdentity"`
+	Ext                string `json:"ext"`
+	Name               string `json:"name"`
+}
+
+type UserRepositoryResponse struct {
+	Identity string `json:"identity"`
 }

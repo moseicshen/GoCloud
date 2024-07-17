@@ -6,6 +6,7 @@ import (
 	"context"
 	"crypto/md5"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	uuid2 "github.com/google/uuid"
@@ -35,6 +36,21 @@ func GenerateToken(id int, identity string, name string) (tokenStr string, err e
 		return "", err
 	}
 	return
+}
+
+func AnalyzeToken(token string) (*define.UserClaim, error) {
+	uc := new(define.UserClaim)
+	// token firstly parse then use JwtKey to verify
+	claims, err := jwt.ParseWithClaims(token, uc, func(token *jwt.Token) (interface{}, error) {
+		return []byte(define.JwtKey), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if !claims.Valid {
+		return uc, errors.New("invalid token")
+	}
+	return uc, nil
 }
 
 func SendEmailCode(userEmail string, code string) (err error) {
