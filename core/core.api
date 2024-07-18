@@ -16,16 +16,16 @@ service core-api {
 	// user register
 	@handler UserRegisterHandler
 	post /user/register (UserRegisterRequest) returns (UserRegisterResponse)
+
+	// check shared file
+	@handler CheckSharedHandler
+	get /shared/info (CheckSharedRequest) returns (CheckSharedResponse)
 }
 
 @server (
 	middleware: Auth
 )
 service core-api {
-	// file upload
-	@handler FileUploadHandler
-	post /file/upload (FileUploadRequest) returns (FileUploadResponse)
-
 	// user-file connection
 	@handler UserRepositoryHandler
 	post /user/repository/save (UserRepositoryRequest) returns (UserRepositoryResponse)
@@ -33,6 +33,10 @@ service core-api {
 	// user file list
 	@handler UserRepositoryListHandler
 	get /user/repository/list (UserRepositoryListRequest) returns (UserRepositoryListResponse)
+
+	// file upload
+	@handler FileUploadHandler
+	post /file/upload (FileUploadRequest) returns (FileUploadResponse)
 
 	// rename file
 	@handler FileRenameHandler
@@ -49,6 +53,10 @@ service core-api {
 	// move file
 	@handler MoveFileHandler
 	post /file/move (MoveFileRequest) returns (MoveFileResponse)
+
+	// share file
+	@handler ShareFileHandler
+	post /file/share (ShareFileRequest) returns (ShareFileResponse)
 }
 
 type LoginRequest {
@@ -158,4 +166,26 @@ type MoveFileRequest {
 }
 
 type MoveFileResponse {}
+
+type ShareFileRequest {
+	UserRepositoryIdentity string `json:"userRepositoryIdentity"`
+	ExpiredTime            int    `json:"expiredTime"`
+}
+
+type ShareFileResponse {
+	Identity  string `json:"identity"`
+	ShareCode string `json:"shareCode"`
+}
+
+type CheckSharedRequest {
+	Identity string `json:"identity"`
+}
+
+type CheckSharedResponse {
+	RepositoryIdentity string `json:"repositoryIdentity"`
+	FileName           string `json:"fileName"`
+	Ext                string `json:"ext"`
+	Size               int64  `json:"size"`
+	Path               string `json:"path"`
+}
 
