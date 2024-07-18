@@ -41,6 +41,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/file/delete",
+					Handler: DeleteFileHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/file/move",
+					Handler: MoveFileHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/file/rename",
 					Handler: FileRenameHandler(serverCtx),
 				},
@@ -48,6 +58,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/file/upload",
 					Handler: FileUploadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/folder/create",
+					Handler: FolderCreateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodGet,

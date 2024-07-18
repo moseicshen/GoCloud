@@ -4,6 +4,7 @@ import (
 	"GoCloud/core/define"
 	"GoCloud/core/internal/svc"
 	"GoCloud/core/internal/types"
+	"GoCloud/core/models"
 	"context"
 	"errors"
 
@@ -37,15 +38,16 @@ func (l *UserRepositoryListLogic) UserRepositoryList(req *types.UserRepositoryLi
 		page = 1
 	}
 	pageOffset := (page - 1) * size
-
+	l.svcCtx.Engine.ShowSQL(true)
 	err = l.svcCtx.Engine.Table("user_repository").Where("parent_id = ? AND user_identity = ?", req.Id, userIdentity).
 		Select("user_repository.id, user_repository.identity, user_repository.repository_identity, user_repository.name, user_repository.ext, repository_pool.size, repository_pool.path").
 		Join("INNER", "repository_pool", "repository_pool.identity = user_repository.repository_identity").
+		Where("user_repository.deleted_at IS NULL").
 		Limit(size, pageOffset).Find(&uf)
 	if err != nil {
 		return nil, err
 	}
-	count, err := l.svcCtx.Engine.Table("user_repository").Where("parent_id = ? AND user_identity = ?", req.Id, userIdentity).Count()
+	count, err := l.svcCtx.Engine.Where("parent_id = ? AND user_identity = ? AND repository_identity <> ?", req.Id, userIdentity, "").Count(new(models.UserRepository))
 	if err != nil {
 		return nil, err
 	}

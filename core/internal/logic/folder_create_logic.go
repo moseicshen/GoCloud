@@ -7,50 +7,47 @@ import (
 	"GoCloud/core/models"
 	"context"
 	"fmt"
+
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 )
 
-type UserRepositoryLogic struct {
+type FolderCreateLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewUserRepositoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserRepositoryLogic {
-	return &UserRepositoryLogic{
+func NewFolderCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FolderCreateLogic {
+	return &FolderCreateLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *UserRepositoryLogic) UserRepository(req *types.UserRepositoryRequest, userIdentity string) (resp *types.UserRepositoryResponse, err error) {
+func (l *FolderCreateLogic) FolderCreate(req *types.FolderCreateRequest, userIdentity string) (resp *types.FolderCreateResponse, err error) {
 	for {
 		count, err := l.svcCtx.Engine.Table("user_repository").Where("parent_id = ? AND user_identity = ? AND name = ?", req.ParentId, userIdentity, req.Name).Count()
 		if err != nil {
 			return nil, err
 		}
 		if count > 0 {
-			prevName, _ := strings.CutSuffix(req.Name, req.Ext)
-			req.Name = fmt.Sprintf("%s_1%s", prevName, req.Ext)
+			req.Name = fmt.Sprintf("%s_1", req.Name)
 		} else {
 			break
 		}
 	}
 	ur := &models.UserRepository{
-		Identity:           helper.UUID(),
-		UserIdentity:       userIdentity,
-		ParentId:           req.ParentId,
-		RepositoryIdentity: req.RepositoryIdentity,
-		Ext:                req.Ext,
-		Name:               req.Name,
+		Identity:     helper.UUID(),
+		UserIdentity: userIdentity,
+		ParentId:     req.ParentId,
+		Name:         req.Name,
 	}
 	_, err = l.svcCtx.Engine.Insert(ur)
 	if err != nil {
 		return nil, err
 	}
-	resp = new(types.UserRepositoryResponse)
+	resp = new(types.FolderCreateResponse)
 	resp.Identity = ur.Identity
 	return
 }

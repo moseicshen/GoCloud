@@ -8,6 +8,13 @@ type EmailCodeRequest struct {
 type EmailCodeResponse struct {
 }
 
+type FileDeleteRequest struct {
+	Identity string `json:"identity"`
+}
+
+type FileDeleteResponse struct {
+}
+
 type FileRenameRequest struct {
 	Identity string `json:"identity"`
 	NewName  string `json:"newName"`
@@ -30,6 +37,15 @@ type FileUploadResponse struct {
 	Name     string `json:"name"`
 }
 
+type FolderCreateRequest struct {
+	ParentId int    `json:"parentId"`
+	Name     string `json:"name"`
+}
+
+type FolderCreateResponse struct {
+	Identity string `json:"identity"`
+}
+
 type InfoRequest struct {
 	Identity string `json:"identity"`
 }
@@ -46,6 +62,14 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	Token string `json:"token"`
+}
+
+type MoveFileRequest struct {
+	Identity       string `json:"identity"`
+	ParentIdentity string `json:"parentIdentity"`
+}
+
+type MoveFileResponse struct {
 }
 
 type UserFile struct {

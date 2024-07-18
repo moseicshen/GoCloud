@@ -37,6 +37,18 @@ service core-api {
 	// rename file
 	@handler FileRenameHandler
 	post /file/rename (FileRenameRequest) returns (FileRenameResponse)
+
+	// create folder
+	@handler FolderCreateHandler
+	post /folder/create (FolderCreateRequest) returns (FolderCreateResponse)
+
+	// delete file
+	@handler DeleteFileHandler
+	post /file/delete (FileDeleteRequest) returns (FileDeleteResponse)
+
+	// move file
+	@handler MoveFileHandler
+	post /file/move (MoveFileRequest) returns (MoveFileResponse)
 }
 
 type LoginRequest {
@@ -124,4 +136,26 @@ type FileRenameRequest {
 }
 
 type FileRenameResponse {}
+
+type FolderCreateRequest {
+	ParentId int    `json:"parentId"`
+	Name     string `json:"name"`
+}
+
+type FolderCreateResponse {
+	Identity string `json:"identity"`
+}
+
+type FileDeleteRequest {
+	Identity string `json:"identity"`
+}
+
+type FileDeleteResponse {}
+
+type MoveFileRequest {
+	Identity       string `json:"identity"`
+	ParentIdentity string `json:"parentIdentity"`
+}
+
+type MoveFileResponse {}
 
